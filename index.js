@@ -59,6 +59,8 @@ app.get('/courses',async(req,res)=>{
 app.get('/mycourses',async(req,res)=>{
     try {
         const{ userId }=req.query
+        const user= await User.findbyId(userId)
+        if(!user){return res.send("no user found")}
         const courses=await Course.find({id:{$in:user.enrolledCourses}})
         const jsonCourse=json.stringfy(courses)
         res.send(jsonCourse)
@@ -71,6 +73,7 @@ app.post("/enroll",async(req,res)=>{
     try {
         const {courseId,userId}=req.body
         const user=await User.findbyId(userId)
+        if(!user){return res.send("no user found")}
         user.enrolledCourses.push(courseId);
         await user.save()
         res.send("user enrolled succesfully")
@@ -83,6 +86,7 @@ app.post("/cancel_enrollment",async(req,res)=>{
     try {
          const {userId,courseId}=req.body
          const user=await User.findbyId(userId)
+         if(!user){return res.send("no user found")}
          user.enrolledCourses=user.enrolledCourses.filter(id=>id!==courseId);
          await user.save()
          res.send("enrollment cancelled")
@@ -91,7 +95,7 @@ app.post("/cancel_enrollment",async(req,res)=>{
     }
 })
 
-app.listen(3000,async()=>{
+app.listen(8000,async()=>{
     try {
         let connection=await mongoose.connect(' mongodb://127.0.0.1:27017/course_management')
 console.log("connected to db")
