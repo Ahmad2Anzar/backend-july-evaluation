@@ -3,7 +3,6 @@ const mongoose=require('mongoose')
 const morgan =require('morgan')
 const fs=require("fs")
 
-const LogDetails=fs.createWriteStream(path.join('logdetails',access.log),{flags:'a'})
 
 
 const app=express();
@@ -65,7 +64,7 @@ app.get('/mycourses',async(req,res)=>{
         const jsonCourse=json.stringfy(courses)
         res.send(jsonCourse)
     } catch (error) {
-        
+        res.send(error)
     }
 })
 
@@ -94,6 +93,9 @@ app.post("/cancel_enrollment",async(req,res)=>{
         res.send(error)
     }
 })
+
+const LogDetails=fs.createWriteStream(path.join('logdetails',access.log),{flags:'a'})
+
 
 app.listen(8000,async()=>{
     try {
